@@ -4,8 +4,8 @@ import Card from "~/components/Card";
 
 export function meta({ }: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Mansara Books" },
+    { name: "description", content: "Welcome to Mansara Books!" },
   ];
 }
 
