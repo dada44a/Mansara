@@ -1,37 +1,44 @@
+import { Link } from "react-router";
+
 type BookCardProps = {
+  id: string;
   title: string;
   author: string;
   price: string;
   image: string;
 };
 
-export default function Card({ title, author, price, image }: BookCardProps) {
+export default function Card({ id, title, author, price, image }: BookCardProps) {
   return (
-    <div className="group w-64 bg-white border border-black/10 p-4 transition hover:shadow-xl hover:-translate-y-1 duration-300">
-      
-      {/* Book Image */}
-      <div className="overflow-hidden mb-4">
+    <div className="group relative flex flex-col bg-white border border-black/5 p-4 transition duration-500 hover:border-black/20 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
+
+      {/* Book Image - Clickable */}
+      <Link to={`/products/${id}`} className="block overflow-hidden mb-6 aspect-[3/4]">
         <img
           src={image}
           alt={title}
-          className="w-full h-80 object-cover transition duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition duration-700 group-hover:scale-105"
         />
-      </div>
+      </Link>
 
       {/* Book Info */}
-      <div className="space-y-1">
-        <h3 className="text-lg font-semibold tracking-tight leading-snug">
-          {title}
-        </h3>
+      <div className="flex flex-col flex-grow space-y-2">
+        <Link to={`/products/${id}`} className="hover:opacity-60 transition">
+          <h3 className="text-xl font-bold tracking-tight leading-none">
+            {title}
+          </h3>
+        </Link>
 
-        <p className="text-xs uppercase tracking-widest opacity-60">
+        <p className="text-[10px] uppercase tracking-[0.2em] opacity-40">
           {author}
         </p>
 
-        <div className="flex items-center justify-between pt-3">
-          <span className="text-sm font-medium">{price}</span>
+        <div className="flex items-center justify-between pt-4 mt-auto">
+          <span className="text-sm font-semibold">{price}</span>
 
-          <button className="text-xs uppercase tracking-widest border border-black px-3 py-1 hover:bg-black hover:text-white transition">
+          <button
+            className="text-[10px] uppercase tracking-widest border border-black px-4 py-2 hover:bg-black hover:text-white transition duration-300 font-bold"
+          >
             Add
           </button>
         </div>

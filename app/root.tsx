@@ -9,8 +9,6 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import Navbar from "./components/Header";
-import Header from "./components/Header";
 import Layouts from "./components/Layout";
 
 export const links: Route.LinksFunction = () => [
@@ -36,7 +34,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Layouts>{children}</Layouts>
+        <Layouts>
+          <Outlet />
+        </Layouts>
 
         <ScrollRestoration />
         <Scripts />
@@ -60,7 +60,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       error.status === 404
         ? "The requested page could not be found."
         : error.statusText || details;
-  } else if (import.meta.env.DEV && error && error instanceof Error) {
+  } else if (error && error instanceof Error) {
     details = error.message;
     stack = error.stack;
   }
