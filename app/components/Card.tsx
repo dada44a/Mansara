@@ -1,4 +1,6 @@
 import { Link } from "react-router";
+import { useCart } from "./CartContext";
+import { products } from "~/data/products";
 
 type BookCardProps = {
   id: string;
@@ -9,6 +11,9 @@ type BookCardProps = {
 };
 
 export default function Card({ id, title, author, price, image }: BookCardProps) {
+  const { addToCart } = useCart();
+  const product = products.find(p => p.id === id);
+
   return (
     <div className="group relative flex flex-col bg-white border border-black/5 p-4 transition duration-500 hover:border-black/20 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
 
@@ -37,7 +42,8 @@ export default function Card({ id, title, author, price, image }: BookCardProps)
           <span className="text-sm font-semibold">{price}</span>
 
           <button
-            className="text-[10px] uppercase tracking-widest border border-black px-4 py-2 hover:bg-black hover:text-white transition duration-300 font-bold"
+            onClick={() => product && addToCart(product)}
+            className="text-[10px] uppercase tracking-widest border border-black px-4 py-2 hover:bg-black hover:text-white transition duration-300 font-bold active:scale-95"
           >
             Add
           </button>

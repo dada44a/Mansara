@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router';
+import { useCart } from '~/components/CartContext';
 
 export default function Checkout() {
     const [isOrdered, setIsOrdered] = useState(false);
-    const subtotal = 1300; // Static subtotal based on mock cart
+    const { cart, subtotal, clearCart } = useCart();
 
     if (isOrdered) {
         return (
-            <div className="bg-white text-black min-h-screen flex items-center justify-center p-10">
+            <div className="bg-white text-black min-h-screen flex items-center justify-center p-6 sm:p-10">
                 <div className="max-w-md text-center">
                     <div className="mb-10 text-8xl">✓</div>
-                    <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-6">Archive Updated.</h1>
+                    <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tighter mb-6">Archive Updated.</h1>
                     <p className="text-sm uppercase tracking-widest opacity-50 mb-12 leading-relaxed">
                         Your request has been processed. The selected stories will reach your sanctuary shortly.
                     </p>
                     <Link
                         to="/products"
+                        onClick={() => clearCart()}
                         className="inline-block px-12 py-5 bg-black text-white text-xs uppercase tracking-widest font-bold hover:bg-gray-800 transition shadow-xl"
                     >
                         Back to Library
@@ -25,19 +27,37 @@ export default function Checkout() {
         );
     }
 
+    if (cart.length === 0) {
+        return (
+            <div className="bg-white text-black min-h-screen flex items-center justify-center p-6 sm:p-10">
+                <div className="text-center">
+                    <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold tracking-tighter leading-none mb-10">
+                        Nothing to <br /> Process.
+                    </h1>
+                    <Link
+                        to="/products"
+                        className="inline-block px-12 py-5 bg-black text-white text-xs uppercase tracking-widest font-bold hover:bg-gray-800 transition shadow-xl"
+                    >
+                        Explore Collection
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-white text-black min-h-screen">
-            <section className="max-w-7xl mx-auto px-10 py-20">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
+            <section className="max-w-7xl mx-auto px-6 sm:px-10 py-12 md:py-20">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
 
                     {/* Checkout Form */}
-                    <div className="space-y-20">
-                        <h1 className="text-5xl md:text-7xl font-bold tracking-tighter leading-none">
+                    <div className="space-y-12 md:space-y-20">
+                        <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tighter leading-[0.9]">
                             Shipping <br /> Details.
                         </h1>
 
-                        <form className="space-y-12" onSubmit={(e) => { e.preventDefault(); setIsOrdered(true); }}>
-                            <div className="grid grid-cols-1 gap-12">
+                        <form className="space-y-10 md:space-y-12" onSubmit={(e) => { e.preventDefault(); setIsOrdered(true); }}>
+                            <div className="grid grid-cols-1 gap-10 md:gap-12">
                                 <div className="space-y-4">
                                     <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 font-bold">FullName / Identity</label>
                                     <input required type="text" className="w-full border-b border-black/20 focus:border-black outline-none pb-4 text-xl tracking-tight transition" placeholder="Laxman Adhikari" />
@@ -46,7 +66,7 @@ export default function Checkout() {
                                     <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 font-bold">Sanctuary Address</label>
                                     <input required type="text" className="w-full border-b border-black/20 focus:border-black outline-none pb-4 text-xl tracking-tight transition" placeholder="Kathmandu, Nepal" />
                                 </div>
-                                <div className="grid grid-cols-2 gap-12">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
                                     <div className="space-y-4">
                                         <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 font-bold">Contact Channel</label>
                                         <input required type="email" className="w-full border-b border-black/20 focus:border-black outline-none pb-4 text-xl tracking-tight transition" placeholder="name@domain.com" />
@@ -68,18 +88,16 @@ export default function Checkout() {
                     </div>
 
                     {/* Order Review - Minimalism */}
-                    <div className="hidden lg:block">
-                        <div className="sticky top-10 flex flex-col h-fit space-y-12 p-10 bg-gray-50/50 border border-black/5">
-                            <h2 className="text-xs uppercase tracking-widest font-bold opacity-40">Order Review</h2>
+                    <div className="lg:block">
+                        <div className="sticky top-28 flex flex-col h-fit space-y-10 p-8 sm:p-10 bg-gray-50/50 border border-black/5">
+                            <h2 className="text-[10px] uppercase tracking-[0.2em] font-bold opacity-40">Order Review</h2>
                             <div className="space-y-6">
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="font-bold">Marphin <span className="opacity-40 font-normal ml-2">x1</span></span>
-                                    <span className="opacity-60 italic">Rs. 300</span>
-                                </div>
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="font-bold">Bahurupi <span className="opacity-40 font-normal ml-2">x2</span></span>
-                                    <span className="opacity-60 italic">Rs. 1000</span>
-                                </div>
+                                {cart.map((item) => (
+                                    <div key={item.id} className="flex justify-between items-center text-sm">
+                                        <span className="font-bold">{item.title} <span className="opacity-40 font-normal ml-2">x{item.quantity}</span></span>
+                                        <span className="opacity-60 italic">Rs. {item.numericPrice * item.quantity}</span>
+                                    </div>
+                                ))}
                             </div>
                             <div className="h-px bg-black/10"></div>
                             <div className="flex justify-between items-baseline">

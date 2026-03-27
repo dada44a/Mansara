@@ -1,9 +1,11 @@
 import React from 'react';
 import { useParams, Link } from 'react-router';
 import { products } from '~/data/products';
+import { useCart } from '~/components/CartContext';
 
 export default function ProductDetail() {
     const { id } = useParams();
+    const { addToCart } = useCart();
     const product = products.find(p => p.id === id);
 
     if (!product) {
@@ -56,7 +58,8 @@ export default function ProductDetail() {
                         <div className="pt-6 border-t border-black/5 flex items-center justify-between">
                             <span className="text-2xl font-bold tracking-tight">{product.price}</span>
                             <button
-                                className="px-8 py-4 bg-black text-white uppercase tracking-[0.2em] text-[10px] font-bold hover:bg-gray-800 transition"
+                                onClick={() => addToCart(product)}
+                                className="px-8 py-4 bg-black text-white uppercase tracking-[0.2em] text-[10px] font-bold hover:bg-gray-800 transition active:scale-95"
                             >
                                 Add to Archive
                             </button>
