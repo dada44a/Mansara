@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { products } from "~/data/products";
+
 
 type BookCardProps = {
   id: string;
@@ -11,25 +11,24 @@ type BookCardProps = {
 
 export default function Card({ id, title, author, price, image }: BookCardProps) {
   const navigate = useNavigate();
-  const product = products.find(p => p.id === id);
 
-  const addToCart = () => {
-    if (!product) return;
+  const product = { id, title, author, price, image };
 
-    const savedCart = localStorage.getItem('mansara_cart');
-    const cart = savedCart ? JSON.parse(savedCart) : [];
+    const addToCart = (product: any) => {
+        const savedCart = localStorage.getItem('mansara_cart');
+        const cart = savedCart ? JSON.parse(savedCart) : [];
 
-    const existingItemIndex = cart.findIndex((item: any) => item.id === id);
-
-    if (existingItemIndex > -1) {
-      cart[existingItemIndex].quantity += 1;
-    } else {
-      cart.push({ ...product, quantity: 1 });
+        const existingItemIndex = cart.findIndex((item: any) => item.id === product.id);
+        
+        if (existingItemIndex > -1) {
+            cart[existingItemIndex].quantity += 1;
+        } else {
+            cart.push({ ...product, quantity: 1 });
+        }
+        localStorage.setItem('mansara_cart', JSON.stringify(cart));
     }
 
-    localStorage.setItem('mansara_cart', JSON.stringify(cart));
-    navigate('/cart');
-  };
+
 
   return (
     <div className="group relative flex flex-col bg-white border border-black/5 p-4 transition duration-500 hover:border-black/20 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
@@ -59,7 +58,7 @@ export default function Card({ id, title, author, price, image }: BookCardProps)
           <span className="text-sm font-semibold">{price}</span>
 
           <button
-            onClick={addToCart}
+            onClick={() => addToCart(product)}
             className="text-[10px] uppercase tracking-widest border border-black px-4 py-2 hover:bg-black hover:text-white transition duration-300 font-bold active:scale-95"
           >
             Add

@@ -1,4 +1,3 @@
-import type { Route } from "./+types/Todos";
 import { useLoaderData } from "react-router";
 
 export async function loader() {

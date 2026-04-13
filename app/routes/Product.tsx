@@ -9,6 +9,7 @@ export default function Product() {
     const { data, error, isLoading } = useGetProductsQuery("");
     const { data: searchData, error: searchError, isLoading: searchIsLoading } = useGetProductsByNameQuery(input)
 
+
  
 
 
