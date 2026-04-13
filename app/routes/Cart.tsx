@@ -1,9 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { useCart } from '~/components/CartContext';
+import type { Product } from '~/data/products';
+
+interface CartItem extends Product {
+    quantity: number;
+}
 
 export default function Cart() {
-    const { cart, removeFromCart, updateQuantity, subtotal } = useCart();
+    const [cart, setCart] = useState<CartItem[]>([]);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    useEffect(() => {
+        const savedCart = localStorage.getItem('mansara_cart');
+        if (savedCart) {
+            setCart(JSON.parse(savedCart));
+        }
+        setIsLoaded(true);
+    }, []);
+
+    useEffect(() => {
+        if (isLoaded) {
+            localStorage.setItem('mansara_cart', JSON.stringify(cart));
+        }
+    }, [cart, isLoaded]);
+
+    const removeFromCart = (productId: string) => {
+        setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+    };
+
+    const updateQuantity = (productId: string, quantity: number) => {
+        if (quantity < 1) return;
+        setCart((prevCart) =>
+            prevCart.map((item) =>
+                item.id === productId ? { ...item, quantity } : item
+            )
+        );
+    };
+
+    const subtotal = cart.reduce((acc, item) => acc + item.numericPrice * item.quantity, 0);
+
+    if (!isLoaded) return null; // Or a loading spinner
 
     if (cart.length === 0) {
         return (
@@ -114,3 +150,4 @@ export default function Cart() {
         </div>
     );
 }
+

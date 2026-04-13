@@ -1,10 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { useCart } from '~/components/CartContext';
+import type { Product } from '~/data/products';
+
+interface CartItem extends Product {
+    quantity: number;
+}
 
 export default function Checkout() {
     const [isOrdered, setIsOrdered] = useState(false);
-    const { cart, subtotal, clearCart } = useCart();
+    const [cart, setCart] = useState<CartItem[]>([]);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    useEffect(() => {
+        const savedCart = localStorage.getItem('mansara_cart');
+        if (savedCart) {
+            setCart(JSON.parse(savedCart));
+        }
+        setIsLoaded(true);
+    }, []);
+
+    const clearCart = () => {
+        localStorage.removeItem('mansara_cart');
+        setCart([]);
+    };
+
+    const subtotal = cart.reduce((acc, item) => acc + item.numericPrice * item.quantity, 0);
+
+    if (!isLoaded) return null;
 
     if (isOrdered) {
         return (
@@ -17,7 +39,7 @@ export default function Checkout() {
                     </p>
                     <Link
                         to="/products"
-                        onClick={() => clearCart()}
+                        onClick={clearCart}
                         className="inline-block px-12 py-5 bg-black text-white text-xs uppercase tracking-widest font-bold hover:bg-gray-800 transition shadow-xl"
                     >
                         Back to Library
@@ -111,3 +133,4 @@ export default function Checkout() {
         </div>
     );
 }
+

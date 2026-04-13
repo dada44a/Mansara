@@ -1,14 +1,41 @@
 import React from 'react';
-import { useParams, Link } from 'react-router';
-import { products } from '~/data/products';
-import { useCart } from '~/components/CartContext';
+import { useParams, Link, useNavigate } from 'react-router';
+import { useGetProductByIdQuery } from '~/services/products';
+
 
 export default function ProductDetail() {
     const { id } = useParams();
-    const { addToCart } = useCart();
-    const product = products.find(p => p.id === id);
+    const navigate = useNavigate();
+    const { data, error, isLoading } = useGetProductByIdQuery(id || "");
 
-    if (!product) {
+    // const addToCart = () => {
+    //     if (!product) return;
+
+    //     const savedCart = localStorage.getItem('mansara_cart');
+    //     const cart = savedCart ? JSON.parse(savedCart) : [];
+
+    //     const existingItemIndex = cart.findIndex((item: any) => item.id === product.id);
+
+    //     if (existingItemIndex > -1) {
+    //         cart[existingItemIndex].quantity += 1;
+    //     } else {
+    //         cart.push({ ...product, quantity: 1 });
+    //     }
+
+    //     localStorage.setItem('mansara_cart', JSON.stringify(cart));
+    //     navigate('/cart');
+    // };
+    if (isLoading) {
+        return (
+            <div className="h-screen flex items-center justify-center bg-white text-black p-10">
+                <div className="text-center">
+                    <h1 className="text-6xl font-bold mb-4 tracking-tighter">Loading...</h1>
+                </div>
+            </div>
+        );
+    }
+
+    if (!data) {
         return (
             <div className="h-screen flex items-center justify-center bg-white text-black p-10">
                 <div className="text-center">
@@ -34,8 +61,8 @@ export default function ProductDetail() {
                     {/* Image - Focused */}
                     <div className="aspect-[3/4] overflow-hidden bg-gray-50 border border-black/5 p-4 transition-all duration-700 hover:shadow-2xl">
                         <img
-                            src={product.image}
-                            alt={product.title}
+                            src={data?.image}
+                            alt={data?.title}
                             className="w-full h-full object-cover"
                         />
                     </div>
@@ -44,21 +71,21 @@ export default function ProductDetail() {
                     <div className="flex flex-col space-y-8">
                         <div>
                             <h1 className="text-4xl md:text-6xl font-bold tracking-tighter leading-none mb-2">
-                                {product.title}
+                                {data?.title}
                             </h1>
                             <p className="text-[10px] uppercase tracking-[0.3em] opacity-40">
-                                By {product.author}
+                                By {data?.author}
                             </p>
                         </div>
 
                         <p className="text-sm leading-relaxed opacity-70 max-w-sm italic">
-                            {product.description}
+                            {data?.description}
                         </p>
 
                         <div className="pt-6 border-t border-black/5 flex items-center justify-between">
-                            <span className="text-2xl font-bold tracking-tight">{product.price}</span>
+                            <span className="text-2xl font-bold tracking-tight">{data?.price}</span>
                             <button
-                                onClick={() => addToCart(product)}
+                                onClick={() => console.log(data?.id)}
                                 className="px-8 py-4 bg-black text-white uppercase tracking-[0.2em] text-[10px] font-bold hover:bg-gray-800 transition active:scale-95"
                             >
                                 Add to Archive
@@ -70,3 +97,4 @@ export default function ProductDetail() {
         </div>
     );
 }
+

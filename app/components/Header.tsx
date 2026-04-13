@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { useCart } from "./CartContext";
 
 export default function Header() {
-  const { cart } = useCart();
-  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -19,15 +16,12 @@ export default function Header() {
         <Link to="/products" className="hover:opacity-50 transition border-b border-transparent hover:border-black pb-1">Library</Link>
         <Link to="/contact" className="hover:opacity-50 transition border-b border-transparent hover:border-black pb-1">Philosophy</Link>
         <Link to="/cart" className="relative hover:opacity-50 transition pb-1">
-          Archive ({cartCount})
+          Archive
         </Link>
       </nav>
 
       {/* Mobile Menu Toggle */}
       <div className="flex items-center gap-6 md:hidden">
-        <Link to="/cart" className="relative text-[10px] font-bold uppercase tracking-widest">
-          ({cartCount})
-        </Link>
         <button
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="flex flex-col gap-1.5 focus:outline-none z-[60]"
@@ -46,7 +40,7 @@ export default function Header() {
           <Link to="/products" onClick={() => setIsMenuOpen(false)} className="hover:opacity-50 transition">Library</Link>
           <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="hover:opacity-50 transition">Philosophy</Link>
           <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="relative hover:opacity-50 transition">
-            Archive ({cartCount})
+            Archive
           </Link>
         </nav>
 
@@ -60,3 +54,4 @@ export default function Header() {
     </header>
   );
 }
+
